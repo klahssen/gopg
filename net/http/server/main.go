@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+
+	"github.com/go-zoo/bone"
 )
 
 func main() {
@@ -31,7 +33,7 @@ func main() {
 	}
 
 	log.Printf("Listening on port %d", p)
-	if err := http.ListenAndServe(fmt.Sprintf(":%d", p), getMux()); err != nil {
+	if err := http.ListenAndServe(fmt.Sprintf(":%d", p), getMux2()); err != nil {
 		panic(err)
 	}
 }
@@ -42,6 +44,25 @@ func getMux() http.Handler {
 	return mux
 }
 
+func getMux2() http.Handler {
+	mux := bone.New()
+	mux.GetFunc("/hello", hello)
+	mux.GetFunc("/hello/:name", helloName)
+	return mux
+}
+
 func hello(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("hello\n"))
+	r.ParseForm()
+	name := r.URL.Query().Get("name")
+	str := ""
+	if name == "" {
+		str = "hello\n"
+	} else {
+		str = fmt.Sprintf("hello '%s'\n", name)
+	}
+	fmt.Fprintf(w, str)
+}
+func helloName(w http.ResponseWriter, r *http.Request) {
+	name := bone.GetValue(r, "name")
+	fmt.Fprintf(w, fmt.Sprintf("hello '%s'\n", name))
 }
