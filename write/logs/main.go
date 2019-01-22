@@ -5,10 +5,13 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"runtime/trace"
 	"time"
 )
 
 func main() {
+	trace.Start(os.Stderr)
+	defer trace.Stop()
 	t0 := time.Now()
 	filepath := flag.String("f", "", "filepath")
 	n := flag.Int("n", 0, "number of entries to create")

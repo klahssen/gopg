@@ -1,0 +1,22 @@
+Run tests then go tool pprof with the generated profiles.
+
+For example for a cpu profile:
+go test -run=XXX -bench=BenchmarkGet -cpuprofile=/tmp/c.p .
+
+then
+go tool pprof -svg /path/to/bin /path/to/profile > cpu.svg
+
+open -a 'Google Chrome' <file.svg>
+
+then web or svg in the interactive mode
+
+
+
+could use 
+go test -trace trace.out
+or
+go test -bench . -trace trace.out
+or 
+go run main.go 2> trace.out
+then
+go tool trace trace.out

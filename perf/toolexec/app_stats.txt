@@ -1,0 +1,10 @@
+if on linux, perf is a great tool for profiling applications
+
+
+show stats :
+go build -toolexec="perf stat" <bin>
+
+or 
+record a profile:
+go build -toolexec="perf record -g -o /tmp/p" <bin>
+perf report -i /tmp/p

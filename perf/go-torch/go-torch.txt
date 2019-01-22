@@ -1,0 +1,8 @@
+go-torch is a flamegraph for go apps
+flamegraphs can consume data from many sources, including pprof and perf
+
+github.com/uber/go-torch
+
+example:
+go build -gcflags=-cpuprofile=/tmp/c.p .
+go-torch $(go tool compile -n) /tmp/c.p
