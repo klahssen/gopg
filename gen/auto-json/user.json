@@ -1,0 +1,9 @@
+{
+    "fname":"John",
+    "lname":"Doe",
+    "gender":"male",
+    "age":30,
+    "country":"fr",
+    "religion":"muslim",
+    "email":"user@domain.com"
+}
