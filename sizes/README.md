@@ -1,6 +1,6 @@
-## OUTPUT FROM THE PROGRAM
+# OUTPUT FROM THE PROGRAM
 
-# Maximum values of integers
+## Maximum values of integers
 
 max int8 : 128
 max uint8: 255
