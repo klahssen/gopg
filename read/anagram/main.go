@@ -19,6 +19,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "failed to open file: %s\n", err.Error())
 		os.Exit(1)
 	}
+	defer f.Close()
 	scann := bufio.NewScanner(f)
 	text := ""
 	e := []entry{}

@@ -19,6 +19,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to open file: %s", err.Error())
 	}
+	defer file.Close()
 	fmt.Printf("opened file '%s'\n", *f)
 	buffer := make([]byte, buffSize)
 	for {
