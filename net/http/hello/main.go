@@ -5,6 +5,11 @@ import (
 	"net/http"
 )
 
+/*
+WARNING:
+The default http server has NO TIMEOUTS
+*/
+
 func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "hello world!")
 }

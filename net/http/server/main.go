@@ -7,9 +7,15 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/go-zoo/bone"
 )
+
+/*
+WARNING:
+The default http server has NO TIMEOUTS
+*/
 
 func main() {
 	port := "8080"
@@ -31,9 +37,16 @@ func main() {
 	if p, err = strconv.Atoi(port); err != nil {
 		panic(fmt.Sprintf("invalid port '%s': %s", port, err.Error()))
 	}
-
+	server := http.Server{
+		Addr:              fmt.Sprintf(":%d", p),
+		ReadTimeout:       time.Second * 3,
+		WriteTimeout:      time.Second * 3,
+		ReadHeaderTimeout: time.Second * 3,
+		IdleTimeout:       time.Second * 3,
+		Handler:           getMux2(),
+	}
 	log.Printf("Listening on port %d", p)
-	if err := http.ListenAndServe(fmt.Sprintf(":%d", p), getMux2()); err != nil {
+	if err := server.ListenAndServe(); err != nil {
 		panic(err)
 	}
 }

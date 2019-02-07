@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"time"
 )
 
 func main() {
@@ -32,7 +33,8 @@ func main() {
 		fmt.Fprintf(os.Stderr, "invalid request: %s\n", err.Error())
 		os.Exit(1)
 	}
-	client := http.DefaultClient
+	//client:=http.DefaultClient
+	client := http.Client{Timeout: time.Second * 3}
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "request failed: %s\n", err.Error())
