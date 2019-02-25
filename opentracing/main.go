@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"log"
-	"runtime"
 	"time"
 )
 
@@ -35,5 +34,5 @@ func main() {
 	}()
 	err = <-errChan
 	log.Printf("main: closed server: err: %v", err)
-	runtime.Goexit()
+	//runtime.Goexit()
 }

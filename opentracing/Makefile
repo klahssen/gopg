@@ -9,3 +9,7 @@ jaeger:
   	-p 14268:14268 \
   	-p 9411:9411 \
   	jaegertracing/all-in-one:1.6
+stop:
+	docker stop jaeger
+remove:
+	docker rm jaeger
