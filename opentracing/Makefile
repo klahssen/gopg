@@ -8,7 +8,7 @@ jaeger:
   	-p 16686:16686 \
   	-p 14268:14268 \
   	-p 9411:9411 \
-  	jaegertracing/all-in-one:1.6
+  	jaegertracing/all-in-one:1.6 #frontend on port 16686
 stop:
 	docker stop jaeger
 remove:
