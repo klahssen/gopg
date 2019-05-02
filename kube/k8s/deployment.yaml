@@ -1,0 +1,30 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: hellokube-go
+  labels: {app: hellokube-go}
+spec:
+  replicas: 1
+  template:
+    metadata: {labels: {app: hellokube-go}}
+    spec:
+      containers:
+      - name: hellokube-go
+        image: twiggg/hellokube-go:${TAG}
+        command:
+        ports:
+          - containerPort: 8080
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: hellokube-go
+spec:
+  type: LoadBalancer
+  selector:
+    app: hellokube-go
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
