@@ -1,0 +1,18 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: "hellokube-go-vsvc"
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - hellokube-gateway
+  http:
+  - match:
+    - uri:
+        exact: /hellokube
+    route:
+    - destination:
+        host: "hellokube-go"
+        port:
+          number: 9095
