@@ -27,7 +27,7 @@ import (
 
 // Some sane defaults
 const (
-	DefaultNumMsgs     = 500000
+	DefaultNumMsgs     = 100000
 	DefaultNumPubs     = 1
 	DefaultNumSubs     = 0
 	DefaultMessageSize = 128
