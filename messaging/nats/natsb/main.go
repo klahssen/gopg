@@ -21,6 +21,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/klahssen/gopg/messaging/nats/natsb/protogen/hello"
 	"github.com/nats-io/nats.go"
 	//"github.com/nats-io/nats.go/bench"
 )
@@ -48,6 +49,7 @@ func main() {
 	var numPubs = flag.Int("np", DefaultNumPubs, "Number of Concurrent Publishers")
 	var numSubs = flag.Int("ns", DefaultNumSubs, "Number of Concurrent Subscribers")
 	var numMsgs = flag.Int("n", DefaultNumMsgs, "Number of Messages to Publish")
+	var protoFlag = flag.Bool("proto", false, "send protobuf messsage")
 	var msgSize = flag.Int("ms", DefaultMessageSize, "Size of the message.")
 	var showHelp = flag.Bool("h", false, "Show help message")
 
@@ -99,7 +101,7 @@ func main() {
 		defer nc.Close()
 
 		//go runPublisher(nc, &startwg, &donewg, pubCounts[i], *msgSize)
-		go runPublisher(strconv.Itoa(i+1), nc, &startwg, &donewg, (*numMsgs)/(*numPubs), *msgSize)
+		go runPublisher(strconv.Itoa(i+1), nc, *protoFlag, &startwg, &donewg, (*numMsgs)/(*numPubs), *msgSize)
 	}
 
 	log.Printf("Starting benchmark [msgs=%d, msgsize=%d, pubs=%d, subs=%d]\n", *numMsgs, *msgSize, *numPubs, *numSubs)
@@ -112,13 +114,21 @@ func main() {
 	//fmt.Print(benchmark.Report())
 }
 
-func runPublisher(name string, nc *nats.Conn, startwg, donewg *sync.WaitGroup, numMsgs int, msgSize int) {
+func runPublisher(name string, nc *nats.Conn, modeProto bool, startwg, donewg *sync.WaitGroup, numMsgs int, msgSize int) {
 	startwg.Done()
 
 	args := flag.Args()
 	subj := args[0]
 	var msg []byte
-	if msgSize > 0 {
+	var err error
+	if modeProto {
+		h := &hello.Hello{Name: "world"}
+		msg, err = h.Marshal()
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Printf("protobuf marshaled message: len=%d", len(msg))
+	} else if msgSize > 0 {
 		msg = make([]byte, msgSize)
 	}
 

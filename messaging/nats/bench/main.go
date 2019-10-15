@@ -20,6 +20,7 @@ func main() {
 }
 
 func pubsub() {
+	protoFlag := flag.Bool("proto", false, "send protobuf msg")
 	nPubsFlag := flag.Uint("p", 1, "number of publishers")
 	nConsumersFlag := flag.Uint("c", 1, "number of consumers")
 	nMsgsFlag := flag.Uint("m", 1000000, "number of messages")
@@ -65,7 +66,12 @@ func pubsub() {
 			log.Printf("%s consumed %d messages in %s (%.1f/sec)", name, target, dur, float64(time.Second)/float64(dur)*float64(target))
 		}(fmt.Sprintf("consumer %d", i))
 	}
-	msg := make([]byte, int(*msgSizeFlag))
+	var msg []byte
+	if *protoFlag {
+		msg = Hello{}
+	} else {
+		msg = make([]byte, int(*msgSizeFlag))
+	}
 	wg1 := sync.WaitGroup{}
 	wg1.Add(int(*nPubsFlag))
 	for i := 1; i <= int(*nPubsFlag); i++ {
