@@ -34,6 +34,9 @@ func main() {
 	tryCreateDeleteRecreate(ctx, client, "file1")
 	log.Println("------- createAndTryDeleteWithOpenedReader ...")
 	createAndTryDeleteWithOpenedReader(ctx, client, "file1")
+	log.Println("------- tryCreateOpenWriterDeleteWrite ...")
+	tryCreateOpenWriterDeleteWrite(ctx, client, "file1")
+
 }
 func list(ctx context.Context, client *storage.Client, prefix string, delimiter string) error {
 	q := &storage.Query{Prefix: prefix, Delimiter: delimiter, Versions: true}
@@ -106,6 +109,31 @@ func tryCreateDeleteRecreate(ctx context.Context, client *storage.Client, filena
 		return
 	}
 
+}
+
+func tryCreateOpenWriterDeleteWrite(ctx context.Context, client *storage.Client, filename string) {
+	var err error
+	if err = writeNew(ctx, client, filename, []byte("content1")); err != nil {
+		log.Println(err)
+		return
+	}
+	h1 := client.Bucket(bktName).Object(filename)
+	w := h1.NewWriter(ctx)
+	a, _ := h1.Attrs(ctx)
+	log.Printf("object: %s, generation: %d", a.Name, a.Generation)
+	if err = delete(ctx, client, filename); err != nil {
+		log.Println(err)
+		return
+	}
+	content := []byte("i am writing something")
+	w.Write(content)
+	w.Close()
+	if err = read(ctx, client, filename); err != nil {
+		log.Println(err)
+		return
+	}
+	a, _ = h1.Attrs(ctx)
+	log.Printf("object: %s, generation: %d", a.Name, a.Generation)
 }
 
 func createAndTryDeleteWithOpenedReader(ctx context.Context, client *storage.Client, filename string) {
