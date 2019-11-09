@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package audience.v1;
+option go_package = "github.com/klahssen/gopg/grpc/streaming/proto";
+
+enum Action {
+    NONE=0;
+    ADD=1;
+    REMOVE=2;
+}
+message Command {
+    string profileID=1;
+    repeated string segmentIDs=2;
+    Action action=3;
+}
+
+message Confirmation {
+    string txID=1;
+}
+
+service CommandsAPI {
+    rpc PushStream(stream Command) returns (Confirmation);
+    rpc Push(Command) returns (Confirmation);
+}
