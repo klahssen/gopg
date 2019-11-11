@@ -28,6 +28,10 @@ func main() {
 		log.Println(err)
 		return
 	}
+	log.Println("------- create /dir1/sub1/file1 ...")
+	if err = writeNew(ctx, client, "dir1/sub1/file1", []byte("content of file1")); err != nil {
+		log.Printf("failed: %v", err)
+	}
 	log.Println("------- tryReadWhileWriting ...")
 	tryReadWhileWriting(ctx, client, "file1")
 	log.Println("------- tryCreateDeleteRecreate ...")
