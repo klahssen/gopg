@@ -36,6 +36,12 @@ func main() {
 	createAndTryDeleteWithOpenedReader(ctx, client, "file1")
 	log.Println("------- tryCreateOpenWriterDeleteWrite ...")
 	tryCreateOpenWriterDeleteWrite(ctx, client, "file1")
+	log.Println("------- tryCreateOpenWriterDeleteWrite ...")
+	tryCreateOpenWriterDeleteWrite(ctx, client, "file1")
+	log.Println("------- upsert ...")
+	if err := upsert(ctx, client, "file1", []byte(fmt.Sprintf("blablabla %d", time.Now().Unix()))); err != nil {
+		log.Println(err)
+	}
 
 }
 func list(ctx context.Context, client *storage.Client, prefix string, delimiter string) error {
@@ -109,6 +115,25 @@ func tryCreateDeleteRecreate(ctx context.Context, client *storage.Client, filena
 		return
 	}
 
+}
+
+func upsert(ctx context.Context, client *storage.Client, filename string, content []byte) error {
+	err := read(ctx, client, filename)
+	log.Printf("initial read: err: %v", err)
+	h := client.Bucket(bktName).Object(filename)
+	w := h.NewWriter(ctx)
+	_, err = w.Write(content)
+	if err != nil {
+		return fmt.Errorf("write: %v", err)
+	}
+	err = delete(ctx, client, filename)
+	if err != nil {
+		return fmt.Errorf("delete: %v", err)
+	}
+	w.Close()
+	err = read(ctx, client, filename)
+	log.Printf("final read: err: %v", err)
+	return nil
 }
 
 func tryCreateOpenWriterDeleteWrite(ctx context.Context, client *storage.Client, filename string) {
